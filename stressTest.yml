@@ -1,0 +1,58 @@
+config:
+  target: 'http://localhost:3000'
+  phases:
+    - duration: 60
+      arrivalRate: 15
+  processor: "./my-functions.js"
+  defaults:
+    headers:
+      x-my-service-auth: '987401838271002188298567'
+scenarios:
+  - name: "Get a restaurant by name"
+    weight: 4
+    flow:
+    - loop:
+      - function: "generateRandomData"
+      - get:
+          url: "/search/restaurantsByName/{{ name }}"
+      count: 15
+  - name: "Get restaurants of a cuisine type"
+    weight: 4
+    flow:
+    - loop: 
+      - function: "generateRandomData"
+      - get:
+          url: '/search/restaurantsByCuisine/{{cuisineId}}'
+      count: 15
+  - name: "Get Restaurants by Location"
+    weight: 3
+    flow: 
+    - loop: 
+      - function: "generateRandomData"
+      - get:
+          url: "/search/restaurantsByLocation/{{ location }}"
+      count: 15
+  - name: "Get Restaurants by Name and Location"
+    weight: 3
+    flow: 
+    - loop: 
+      - function: "generateRandomData"
+      - get:
+          url: "/search/restaurantsByNameAndlocation"
+          json: 
+            name: "{{ name }}"
+            location: "{{ location }}"
+      count: 15
+  - name: 'Post Restaurant'
+    weight: 1
+    flow: 
+    - loop:
+      - function: "generateRandomData"
+      - post:
+          url: "/search/postRestaurant"
+          json: 
+            name: "{{ name }}"
+            location: "{{ location }}"
+            cuisineId: "{{ cuisineId }}"
+      count: 3
+  
