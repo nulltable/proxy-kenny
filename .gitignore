@@ -25,3 +25,4 @@ build/
 dist/
 
 package-lock.json
+newrelic.js
